@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TAIKA · Figuretes 3D fetes a mà</title>
+  <!-- Full d'estils extern -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Capçalera fixa i navegació -->
+  <header id="hd">
+    <img src="assets/logo-taika.png" alt="TAIKA">
+    <nav>
+      <a href="#track">Figuretes</a>
+      <a href="#colleccions">Col·lecció</a>
+      <a href="#botiga">Botiga</a>
+      <a href="#contacte">Contacte</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Portada amb el logo i les figuretes -->
+    <section class="top" id="top">
+      <div class="in">
+        <img class="logo" id="hl" alt="TAIKA">
+        <div class="row" id="row"></div>
+      </div>
+      <p class="cue">Baixa i coneix-les ↓</p>
+    </section>
+
+    <!-- Carrusel de figuretes controlat amb el scroll -->
+    <section id="track">
+      <div class="stage" id="stage">
+        <div class="blob" id="blob"></div>
+        <div class="dots" id="dots" role="tablist" aria-label="Figuretes"></div>
+        <div class="fig" data-i="0">
+          <img src="assets/la-dioneia.png" data-r="0.935" alt="Noia amb una planta carnívora de barret" draggable="false">
+        </div>
+        <div class="fig" data-i="1">
+          <img src="assets/la-casa.png" data-r="1.0" alt="Noia vestida de casa de cartró amb un gat al teulat" draggable="false">
+        </div>
+        <div class="fig" data-i="2">
+          <img src="assets/la-pluja.png" data-r="0.901" alt="Noia amb impermeable groc i una fulla de paraigua" draggable="false">
+        </div>
+        <div class="fig" data-i="3">
+          <img src="assets/la-maduixa.png" data-r="0.841" alt="Noia vestida de maduixa amb un cargol" draggable="false">
+        </div>
+        <div class="fig" data-i="4">
+          <img src="assets/el-bolet.png" data-r="0.897" alt="Noia amb un bolet gegant de barret i un fanalet" draggable="false">
+        </div>
+        <div class="info">
+          <h3>La Dioneia</h3>
+          <p>Una planta carnívora de barret. Sembla fera, però abraça una flor.</p>
+        </div>
+        <div class="info">
+          <h3>La Casa</h3>
+          <p>Viu dins d’una casa de cartró, amb gat al teulat i bústia a la porta.</p>
+        </div>
+        <div class="info">
+          <h3>La Pluja</h3>
+          <p>Una fulla de paraigua, botes grogues i dues granotes de companyia.</p>
+        </div>
+        <div class="info">
+          <h3>La Maduixa</h3>
+          <p>Vestida de maduixa, amb un cargol a la mà i flors als peus.</p>
+        </div>
+        <div class="info">
+          <h3>El Bolet</h3>
+          <p>Un bolet gegant de barret i un fanalet per il·luminar el camí.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Col·lecció, filtres i seguiment de les figuretes -->
+    <section class="coll" id="colleccions">
+      <div class="cl-wrap">
+        <p class="kick rv">Col·lecció 01</p>
+        <h2 class="rv">Cinc mons, tots junts</h2>
+        <p class="sub rv">Coneix les cinc figuretes, mira’n els detalls i descobreix el món de cadascuna.</p>
+        <div class="chips rv" id="chips" role="group" aria-label="Filtra per món">
+          <button type="button" data-f="*" class="on">Totes</button>
+          <button type="button" data-f="Bosc">Bosc</button>
+          <button type="button" data-f="Poble">Poble</button>
+          <button type="button" data-f="Aigua">Aigua</button>
+          <button type="button" data-f="Hort">Hort</button>
+        </div>
+        <div class="prog rv">
+          <span>Tens <b id="cnt">0 de 5</b></span>
+          <div class="barw"><div id="bar"></div></div>
+          <button id="reset" class="lnk" type="button">Torna a començar</button>
+        </div>
+        <div class="grid" id="grid">        </div>
+        <div class="secret" id="secret">
+          <p></p>
+          <a class="btn" href="#contacte">Avisa’m</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mostres visuals de marxandatge -->
+    <section class="merch" id="botiga">
+      <div class="merch-wrap">
+        <p class="kick">Botiga TAIKA</p>
+        <h2>Una mica de TAIKA per endur-te</h2>
+        <p class="merch-intro">Idees de marxandatge per fer créixer el món de les figuretes. Aquests dissenys són només una mostra visual; encara no estan a la venda.</p>
+        <div class="merch-grid">
+          <article class="merch-card">
+            <div class="merch-art">
+              <svg viewBox="0 0 240 220" role="img" aria-label="Disseny de mostra d’una samarreta TAIKA">
+                <path d="M75 35 98 25h44l23 10 38 25-22 35-22-13v105H81V82L59 95 37 60z" fill="#faf4e8" stroke="#26231f" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M98 26q22 28 44 0" fill="none" stroke="#26231f" stroke-width="4"/>
+                <text x="120" y="115" text-anchor="middle" fill="#26231f" font-size="24" font-weight="700">TAIKA</text>
+                <path d="M120 128c-10-13-25 2 0 19 25-17 10-32 0-19Z" fill="#d93a32"/>
+              </svg>
+            </div>
+            <div class="merch-copy">
+              <h3>Samarreta TAIKA</h3>
+              <p>Un disseny còmode amb un petit detall de la marca.</p>
+              <span class="merch-status">Disseny de mostra</span>
+            </div>
+          </article>
+          <article class="merch-card">
+            <div class="merch-art">
+              <svg viewBox="0 0 240 220" role="img" aria-label="Disseny de mostra d’una bossa tote">
+                <path d="M60 75h120l12 115H48z" fill="#faf4e8" stroke="#26231f" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M83 78V60a37 37 0 0 1 74 0v18" fill="none" stroke="#26231f" stroke-width="5"/>
+                <circle cx="120" cy="127" r="29" fill="#f7c6d6"/>
+                <text x="120" y="134" text-anchor="middle" fill="#26231f" font-size="16" font-weight="700">TAIKA</text>
+                <path d="M120 150c-8-10-19 1 0 14 19-13 8-24 0-14Z" fill="#d93a32"/>
+              </svg>
+            </div>
+            <div class="merch-copy">
+              <h3>Bossa tote</h3>
+              <p>Una bossa de tela per portar-hi el teu petit món.</p>
+              <span class="merch-status">Disseny de mostra</span>
+            </div>
+          </article>
+          <article class="merch-card">
+            <div class="merch-art">
+              <svg viewBox="0 0 240 220" role="img" aria-label="Disseny de mostra d’un full d’adhesius">
+                <rect x="35" y="24" width="170" height="172" rx="18" fill="#fff" stroke="#26231f" stroke-width="3" stroke-dasharray="7 6"/>
+                <circle cx="85" cy="76" r="31" fill="#f7c6d6"/>
+                <path d="M85 59c-8-10-19 1 0 14 19-13 8-24 0-14Z" fill="#d93a32"/>
+                <circle cx="155" cy="76" r="31" fill="#f8c78a"/>
+                <path d="m155 53 6 16 17 1-13 10 4 17-14-9-14 9 4-17-13-10 17-1z" fill="#5f8f2f"/>
+                <circle cx="85" cy="147" r="31" fill="#bfe4f2"/>
+                <text x="85" y="155" text-anchor="middle" fill="#26231f" font-size="23" font-weight="700">T</text>
+                <circle cx="155" cy="147" r="31" fill="#f5ded1"/>
+                <path d="M143 152q12-25 24 0m-20-10h16" fill="none" stroke="#26231f" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="merch-copy">
+              <h3>Pack d’adhesius</h3>
+              <p>Petits trossets de color per decorar llibreta, mòbil o portàtil.</p>
+              <span class="merch-status">Disseny de mostra</span>
+            </div>
+          </article>
+          <article class="merch-card">
+            <div class="merch-art">
+              <svg viewBox="0 0 240 220" role="img" aria-label="Disseny de mostra d’una làmina de la col·lecció">
+                <rect x="50" y="14" width="140" height="192" rx="4" fill="#fff" stroke="#26231f" stroke-width="4"/>
+                <rect x="63" y="27" width="114" height="130" rx="56" fill="#f7c6d6"/>
+                <path d="M119 125c-21-19-3-61 8-69 15 34 8 58-8 69Z" fill="#5f8f2f" stroke="#26231f" stroke-width="3"/>
+                <path d="M115 124q-22-14-29-2 12 16 29 2m12-13q18-17 29-8-5 18-29 8" fill="#f8c78a" stroke="#26231f" stroke-width="3"/>
+                <text x="120" y="178" text-anchor="middle" fill="#26231f" font-size="13" font-weight="700">CINC MONS</text>
+                <text x="120" y="193" text-anchor="middle" fill="#26231f" font-size="8">COL·LECCIÓ TAIKA</text>
+              </svg>
+            </div>
+            <div class="merch-copy">
+              <h3>Làmina de col·lecció</h3>
+              <p>Una il·lustració per penjar-hi un trosset d’aquest univers.</p>
+              <span class="merch-status">Disseny de mostra</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Subscripció, dades de contacte i peu de pàgina -->
+    <section class="contact" id="contacte">
+      <div class="ct-wrap">
+        <div class="ct-copy">
+          <h2 class="rv">Subscriu-te</h2>
+          <p class="ct-links rv">
+            Instagram: <a href="#">@taika.figuretes</a><br>
+            Correu: <a href="mailto:hola@taika.cat">hola@taika.cat</a>
+          </p>
+        </div>
+        <div class="rv subscribe" role="group" aria-label="Subscripció al butlletí">
+          <label for="subscribe-email">Correu electrònic</label>
+          <input id="subscribe-email" type="email" autocomplete="email" placeholder="tu@exemple.cat">
+          <button class="btn" type="button" disabled>Subscriu-me aviat</button>
+        </div>
+      </div>
+      <footer>© TAIKA</footer>
+    </section>
+  </main>
+
+  <!-- Interaccions de la web -->
+  <script src="app.js" defer></script>
+</body>
+</html>
