@@ -13,6 +13,21 @@ const clamp = (value, min = 0, max = 1) =>
 const smoothStep = (value) =>
   value * value * value * (value * (value * 6 - 15) + 10);
 const scaleStops = [0.5, 0.34, 0.23, 0.12];
+const turntableFrameCount = 72;
+const turntableFrames = Array.from({ length: turntableFrameCount }, (_, index) => {
+  const image = new Image();
+  image.decoding = 'async';
+  return image;
+});
+let turntableFramesReady = false;
+
+function showTurntableFrame(image, frameNumber) {
+  const frame = clamp(frameNumber, 1, turntableFrameCount);
+  if (!turntableFramesReady || image.dataset.turntableFrame === String(frame)) return;
+
+  image.dataset.turntableFrame = frame;
+  image.src = turntableFrames[frame - 1].src;
+}
 
 const baseScale = (distance) => {
   if (distance >= 3) return 0;
@@ -109,6 +124,14 @@ function updateScrollAnimation(now) {
     const horizontalOffset = distanceFromCenter * width
       * (isSmallScreen ? 0.27 : 0.24);
     const opacity = clamp(1 - (absoluteDistance - 2) / 0.8);
+    const image = figure.firstElementChild;
+    if (image.dataset.turntable === 'pluja') {
+      const frameNumber = turntableFrameCount - Math.round(
+        smoothStep(clamp(absoluteDistance)) * (turntableFrameCount - 1)
+      );
+      showTurntableFrame(image, frameNumber);
+    }
+
     figure.style.transform =
       `translateX(-50%) translateX(${horizontalOffset}px) ` +
       `scale(${scale})`;
@@ -167,6 +190,28 @@ const requestScrollAnimation = () => {
   }
 };
 
+// Precarrega els fotogrames perquè el scroll els pugui recórrer sense pauses
+Promise.all(turntableFrames.map((image, index) => new Promise((resolve, reject) => {
+  const source = `assets/pluja-scroll/${String(index + 1).padStart(4, '0')}.png`;
+  image.addEventListener('load', () => resolve(image), { once: true });
+  image.addEventListener('error', () => {
+    reject(new Error('No s’ha pogut carregar el fotograma ' + (index + 1) + '.'));
+  }, { once: true });
+  image.src = source;
+
+  if (image.complete) {
+    if (image.naturalWidth > 0) resolve(image);
+    else reject(new Error('No s’ha pogut carregar el fotograma ' + (index + 1) + '.'));
+  }
+})))
+  .then(() => {
+    turntableFramesReady = true;
+    requestScrollAnimation();
+  })
+  .catch((error) => {
+    console.error('No s’han pogut carregar els fotogrames de la Pluja.', error);
+  });
+
 // Actualitza el carrusel quan es mou o es redimensiona la finestra
 addEventListener('scroll', requestScrollAnimation, { passive: true });
 addEventListener('resize', requestScrollAnimation);
@@ -190,6 +235,10 @@ document.querySelectorAll('.rv').forEach((element) => {
 const heroRow = document.getElementById('row');
 figs.forEach((figure, index) => {
   const image = figure.firstElementChild.cloneNode();
+  if (image.dataset.poster) image.src = image.dataset.poster;
+  image.removeAttribute('data-turntable');
+  image.removeAttribute('data-turntable-frame');
+  image.removeAttribute('data-poster');
   image.removeAttribute('draggable');
   image.alt = '';
   image.onclick = () => goToFigure(index);
@@ -284,6 +333,10 @@ const cards = figuresInfo.map((figureInfo, index) => {
     + 'Tinc aquesta</button>';
 
   const image = figs[index].firstElementChild.cloneNode();
+  if (image.dataset.poster) image.src = image.dataset.poster;
+  image.removeAttribute('data-turntable');
+  image.removeAttribute('data-turntable-frame');
+  image.removeAttribute('data-poster');
   image.className = 'fg';
   image.removeAttribute('draggable');
   image.alt = figureInfo.n;
