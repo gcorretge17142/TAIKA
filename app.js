@@ -159,6 +159,17 @@ function updateScrollAnimation(now) {
 
   const heroProgress = clamp(scrollY / (height * 0.8));
   heroFigures.forEach((figure, index) => {
+    const image = figure.firstElementChild;
+    if (image.dataset.turntable === 'pluja') {
+      const turntableProgress = smoothStep(clamp(scrollY / height));
+      const frameNumber = 1 + Math.round(
+        turntableProgress * (turntableFrameCount - 1)
+      );
+      showTurntableFrame(image, frameNumber);
+      figure.style.transform = '';
+      return;
+    }
+
     figure.style.transform = 'scaleX('
       + Math.cos(2 * Math.PI * smoothStep(clamp(heroProgress * 1.3 - index * 0.07)))
       + ')';
@@ -235,8 +246,10 @@ document.querySelectorAll('.rv').forEach((element) => {
 const heroRow = document.getElementById('row');
 figs.forEach((figure, index) => {
   const image = figure.firstElementChild.cloneNode();
-  if (image.dataset.poster) image.src = image.dataset.poster;
-  image.removeAttribute('data-turntable');
+  const isTurntable = image.dataset.turntable === 'pluja';
+  if (isTurntable) image.src = turntableFrames[0].src;
+  else if (image.dataset.poster) image.src = image.dataset.poster;
+  if (!isTurntable) image.removeAttribute('data-turntable');
   image.removeAttribute('data-turntable-frame');
   image.removeAttribute('data-poster');
   image.removeAttribute('draggable');
@@ -292,7 +305,8 @@ const figuresInfo = [
     n: 'La Pluja',
     w: 'Aigua',
     e: 'Edició nº 03 de 100',
-    t: 'Les dues granotes de la base són inseparables.'
+    t: 'Les dues granotes de la base són inseparables.',
+    image: 'assets/TaikaPlujaPortadaFinal.png'
   },
   {
     n: 'La Maduixa',
@@ -322,6 +336,7 @@ try {
 const cards = figuresInfo.map((figureInfo, index) => {
   const card = document.createElement('article');
   card.className = 'cd';
+  if (figureInfo.image) card.classList.add('has-background-image');
   card.tabIndex = 0;
   card.dataset.w = figureInfo.w;
   card.style.background = 'rgb(' + palette[index] + ')';
@@ -334,6 +349,7 @@ const cards = figuresInfo.map((figureInfo, index) => {
 
   const image = figs[index].firstElementChild.cloneNode();
   if (image.dataset.poster) image.src = image.dataset.poster;
+  if (figureInfo.image) image.src = figureInfo.image;
   image.removeAttribute('data-turntable');
   image.removeAttribute('data-turntable-frame');
   image.removeAttribute('data-poster');

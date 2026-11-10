@@ -9,7 +9,7 @@ Web estàtica de les figuretes TAIKA.
 - `app.js`: carrusel, filtres i interaccions de la col·lecció.
 - `assets/`: logo i imatges de les figuretes.
 - `assets/PLUJA36fps/`: 150 fotogrames originals de la Pluja.
-- `assets/pluja-scroll/`: fotogrames 1–72 optimitzats; el 72 coincideix amb el centre del carrusel.
+- `assets/pluja-scroll/`: fotogrames 1–72 optimitzats; el 72 coincideix amb el centre del carrusel. A la portada, el scroll també fa avançar i recular la seqüència de la Pluja.
 
 ## Previsualització local
 

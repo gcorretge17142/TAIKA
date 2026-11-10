@@ -799,6 +799,26 @@ footer {
   width: auto;
 }
 
+.cd.has-background-image .fg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100% !important;
+  margin: 0;
+  object-fit: cover;
+}
+
+.cd.has-background-image .top2,
+.cd.has-background-image .det,
+.cd.has-background-image .own {
+  z-index: 1;
+}
+
+.cd.has-background-image .top2 {
+  position: relative;
+}
+
 .det {
   position: absolute;
   left: 12px;
@@ -858,7 +878,8 @@ footer {
   color: var(--cream);
 }
 
-.cd .fg.jump,.cd:hover .fg {
+.cd:not(.has-background-image) .fg.jump,
+.cd:not(.has-background-image):hover .fg {
   animation: wig .7s ease 0s 1;
 }
 
@@ -909,117 +930,6 @@ footer {
 
 .secret.on .btn {
   display: inline-block;
-}
-
-/* Mostres de productes de la botiga */
-.merch {
-  padding: clamp(48px,7vh,80px) 24px;
-  background: var(--cream);
-}
-
-.merch-wrap {
-  max-width: 1100px;
-  margin: auto;
-}
-
-.merch h2 {
-  font-size: clamp(32px,6vw,64px);
-  line-height: 1.05;
-  margin: 4px 0 10px;
-}
-
-.merch-intro {
-  max-width: 52ch;
-  font-size: clamp(17px,2vw,20px);
-  line-height: 1.45;
-}
-
-.merch-grid {
-  display: grid;
-  grid-template-columns: repeat(2,minmax(0,1fr));
-  column-gap: clamp(28px,6vw,80px);
-  margin-top: 28px;
-}
-
-.merch-card {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: 132px minmax(0,1fr);
-  align-items: center;
-  gap: 22px;
-  padding: 22px 0;
-  border-top: 1px solid rgba(38,35,31,.18);
-}
-
-.merch-art {
-  width: 132px;
-  height: 132px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  border-radius: 48% 52% 46% 54% / 52% 45% 55% 48%;
-}
-
-.merch-art svg {
-  width: 72%;
-  height: 78%;
-  overflow: visible;
-}
-
-.merch-card:nth-child(1) .merch-art {
-  background: #f7c6d6;
-}
-
-.merch-card:nth-child(2) .merch-art {
-  background: #f8c78a;
-}
-
-.merch-card:nth-child(3) .merch-art {
-  background: #bfe4f2;
-}
-
-.merch-card:nth-child(4) .merch-art {
-  background: #f5ded1;
-}
-
-.merch-copy {
-  min-width: 0;
-}
-
-.merch-copy h3 {
-  font-size: 19px;
-}
-
-.merch-copy p {
-  margin-top: 7px;
-  line-height: 1.4;
-  opacity: .76;
-}
-
-.merch-status {
-  display: inline-block;
-  margin-top: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  opacity: .58;
-}
-
-@media(max-width:700px) {
-  .merch-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .merch-card {
-    grid-template-columns: 112px minmax(0,1fr);
-    gap: 18px;
-  }
-
-  .merch-art {
-    width: 112px;
-    height: 112px;
-  }
 }
 
 /* Respecta la preferència de moviment reduït */
