@@ -78,15 +78,15 @@
         <h2 class="rv">Cinc mons, tots junts</h2>
         <p class="sub rv">Coneix les cinc figuretes, mira’n els detalls i descobreix el món de cadascuna.</p>
         <div class="chips rv" id="chips" role="group" aria-label="Filtra per món">
-          <button type="button" data-f="*" class="on">Totes</button>
-          <button type="button" data-f="Bosc">Bosc</button>
-          <button type="button" data-f="Poble">Poble</button>
-          <button type="button" data-f="Aigua">Aigua</button>
-          <button type="button" data-f="Hort">Hort</button>
+          <button type="button" data-f="*" class="on" aria-pressed="true">Totes</button>
+          <button type="button" data-f="Bosc" aria-pressed="false">Bosc</button>
+          <button type="button" data-f="Poble" aria-pressed="false">Poble</button>
+          <button type="button" data-f="Aigua" aria-pressed="false">Aigua</button>
+          <button type="button" data-f="Hort" aria-pressed="false">Hort</button>
         </div>
         <div class="prog rv">
-          <span>Tens <b id="cnt">0 de 5</b></span>
-          <div class="barw"><div id="bar"></div></div>
+          <span>Tens <b id="cnt" aria-live="polite">0 de 5</b></span>
+          <div class="barw" role="progressbar" aria-label="Progrés de la col·lecció" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div id="bar"></div></div>
           <button id="reset" class="lnk" type="button">Torna a començar</button>
         </div>
         <div class="grid" id="grid">        </div>

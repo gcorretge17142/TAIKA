@@ -59,11 +59,11 @@ figs.forEach((figure, index) => {
 });
 
 const palette = [
-  [247, 198, 214],
-  [244, 217, 168],
-  [191, 228, 242],
-  [255, 189, 180],
-  [248, 199, 138]
+  [201, 224, 179],
+  [220, 235, 197],
+  [190, 222, 235],
+  [247, 220, 171],
+  [214, 230, 190]
 ];
 
 // Estat de l'animació del carrusel
@@ -293,7 +293,8 @@ const figuresInfo = [
     n: 'La Dioneia',
     w: 'Bosc',
     e: 'Edició nº 01 de 100',
-    t: 'Fixa’t en la flor que abraça: és una mini planta carnívora.'
+    t: 'Fixa’t en la flor que abraça: és una mini planta carnívora.',
+    image: 'assets/PlantaPortada.png'
   },
   {
     n: 'La Casa',
@@ -336,10 +337,7 @@ try {
 const cards = figuresInfo.map((figureInfo, index) => {
   const card = document.createElement('article');
   card.className = 'cd';
-  if (figureInfo.image) card.classList.add('has-background-image');
-  card.tabIndex = 0;
   card.dataset.w = figureInfo.w;
-  card.style.background = 'rgb(' + palette[index] + ')';
   card.innerHTML =
     '<div class="top2"><h3>' + figureInfo.n + '</h3><span class="tg">'
     + figureInfo.w + '</span></div><div class="det"><p><b>'
@@ -358,15 +356,6 @@ const cards = figuresInfo.map((figureInfo, index) => {
   image.alt = figureInfo.n;
   card.insertBefore(image, card.querySelector('.det'));
 
-  card.onclick = (event) => {
-    if (event.target.closest('.own')) return;
-    card.classList.toggle('open');
-  };
-  card.onkeydown = (event) => {
-    if (event.key === 'Enter' && event.target === card) {
-      card.classList.toggle('open');
-    }
-  };
   card.querySelector('.own').onclick = () => {
     const isOwned = ownedFigures.includes(index);
     ownedFigures = isOwned
@@ -399,6 +388,7 @@ function updateCollection() {
   const collectionComplete = ownedFigures.length === 5;
   counter.textContent = ownedFigures.length + ' de 5';
   progressBar.style.width = ownedFigures.length * 20 + '%';
+  progressBar.parentElement.setAttribute('aria-valuenow', ownedFigures.length);
   secret.classList.toggle('on', collectionComplete);
   secret.querySelector('p').textContent = collectionComplete
     ? 'Món secret desbloquejat! Aviat al taller: un sisè món. Escriu-me i seràs la primera persona a saber-ne el nom.'
@@ -416,6 +406,7 @@ document.getElementById('chips').onclick = (event) => {
 
   document.querySelectorAll('#chips button').forEach((chip) => {
     chip.classList.toggle('on', chip === button);
+    chip.setAttribute('aria-pressed', chip === button);
   });
   cards.forEach((card) => {
     card.hidden = button.dataset.f !== '*'
