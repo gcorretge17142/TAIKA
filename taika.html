@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>TAIKA · Handmade 3D Figurines</title>
+  <!-- External stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Fixed header and navigation -->
+  <header id="hd">
+    <img src="assets/logo-taika.png" alt="TAIKA">
+    <nav>
+      <a href="#track">Figurines</a>
+      <a href="#colleccions">Collection</a>
+      <a href="#contacte">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero with the logo and figurines -->
+    <section class="top" id="top">
+      <div class="in">
+        <img class="logo" id="hl" alt="TAIKA">
+        <div class="row" id="row"></div>
+      </div>
+      <p class="cue">Scroll down to meet them ↓</p>
+    </section>
+
+    <!-- Scroll-controlled figurine carousel -->
+    <section id="track">
+      <div class="stage" id="stage">
+        <div class="blob" id="blob"></div>
+        <div class="dots" id="dots" role="tablist" aria-label="Figurines"></div>
+        <div class="fig" data-i="0">
+          <img src="assets/pluja-scroll/0001.png" data-poster="assets/la-pluja.png" data-turntable="pluja" data-turntable-frame="1" data-r="0.901" alt="Girl in a yellow raincoat holding a leaf umbrella" draggable="false">
+        </div>
+        <div class="fig" data-i="1">
+          <img src="assets/la-dioneia.png" data-r="0.935" data-fit="square" alt="Girl wearing a carnivorous plant as a hat" draggable="false">
+        </div>
+        <div class="fig" data-i="2">
+          <img src="assets/el-bolet.png" data-r="0.897" alt="Girl wearing a giant mushroom as a hat and carrying a lantern" draggable="false">
+        </div>
+        <div class="fig" data-i="3">
+          <img src="assets/la-casa.png" data-r="1.0" alt="Girl dressed as a cardboard house with a cat on the roof" draggable="false">
+        </div>
+        <div class="fig" data-i="4">
+          <img src="assets/la-maduixa.png" data-r="0.841" alt="Girl dressed as a strawberry with a snail" draggable="false">
+        </div>
+        <div class="info">
+          <h3>The Rain</h3>
+          <p>A leaf umbrella, yellow boots, and two frog companions.</p>
+        </div>
+        <div class="info">
+          <h3>The Venus Flytrap</h3>
+          <p>A carnivorous plant for a hat. She looks fierce, but she's holding a flower.</p>
+        </div>
+        <div class="info">
+          <h3>The Mushroom</h3>
+          <p>A giant mushroom hat and a lantern to light the way.</p>
+        </div>
+        <div class="info">
+          <h3>The House</h3>
+          <p>She lives in a cardboard house, with a cat on the roof and a mailbox by the door.</p>
+        </div>
+        <div class="info">
+          <h3>The Strawberry</h3>
+          <p>Dressed as a strawberry, with a snail in her hand and flowers at her feet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Collection, filters, and figurine tracking -->
+    <section class="coll" id="colleccions">
+      <div class="cl-wrap">
+        <p class="kick rv">Collection 01</p>
+        <h2 class="rv">Five worlds, together</h2>
+        <p class="sub rv">Meet all five figurines, take a closer look, and discover each of their worlds.</p>
+        <div class="chips rv" id="chips" role="group" aria-label="Filter by world">
+          <button type="button" data-f="*" class="on" aria-pressed="true">All</button>
+          <button type="button" data-f="Forest" aria-pressed="false">Forest</button>
+          <button type="button" data-f="Village" aria-pressed="false">Village</button>
+          <button type="button" data-f="Water" aria-pressed="false">Water</button>
+          <button type="button" data-f="Garden" aria-pressed="false">Garden</button>
+        </div>
+        <div class="prog rv">
+          <span>Collected: <b id="cnt" aria-live="polite">0 of 5</b></span>
+          <div class="barw" role="progressbar" aria-label="Collection progress" aria-valuemin="0" aria-valuemax="5" aria-valuenow="0"><div id="bar"></div></div>
+          <button id="reset" class="lnk" type="button">Start over</button>
+        </div>
+        <div class="grid" id="grid">        </div>
+        <div class="secret" id="secret">
+          <p></p>
+          <a class="btn" href="#contacte">Notify me</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter, contact details, and footer -->
+    <section class="contact" id="contacte">
+      <div class="ct-wrap">
+        <div class="ct-copy">
+          <h2 class="rv">Stay in touch</h2>
+          <p class="ct-links rv">
+            Instagram: <a href="#">@taika.figuretes</a><br>
+            Email: <a href="mailto:hola@taika.cat">hola@taika.cat</a>
+          </p>
+        </div>
+        <div class="rv subscribe" role="group" aria-label="Newsletter subscription">
+          <label for="subscribe-email">Email address</label>
+          <input id="subscribe-email" type="email" autocomplete="email" placeholder="you@example.com">
+          <button class="btn" type="button" disabled>Subscribe soon</button>
+        </div>
+      </div>
+      <footer>© TAIKA</footer>
+    </section>
+  </main>
+
+  <!-- Website interactions -->
+  <script src="app.js" defer></script>
+</body>
+</html>
