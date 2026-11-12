@@ -10,6 +10,7 @@ Web estàtica de les figuretes TAIKA.
 - `assets/`: logo i imatges de les figuretes.
 - `assets/PLUJA36fps/`: 150 fotogrames originals de la Pluja.
 - `assets/pluja-scroll/`: fotogrames 1–72 optimitzats; el 72 coincideix amb el centre del carrusel. A la portada, el scroll també fa avançar i recular la seqüència de la Pluja.
+- `assets/PLANTA150fps/`: 150 fotogrames de la Dionea; el carrusel gran mostra el fotograma 72 al centre i el scroll recorre tota la seqüència a la portada.
 
 ## Previsualització local
 

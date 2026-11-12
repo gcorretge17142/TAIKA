@@ -16,20 +16,36 @@ const clamp = (value, min = 0, max = 1) =>
 const smoothStep = (value) =>
   value * value * value * (value * (value * 6 - 15) + 10);
 const scaleStops = [0.5, 0.34, 0.23, 0.12];
-const turntableFrameCount = 72;
-const turntableFrames = Array.from({ length: turntableFrameCount }, (_, index) => {
-  const image = new Image();
-  image.decoding = 'async';
-  return image;
+const turntables = {
+  pluja: {
+    directory: 'assets/pluja-scroll',
+    frameCount: 72,
+    name: 'Rain'
+  },
+  planta: {
+    directory: 'assets/PLANTA150fps',
+    frameCount: 150,
+    centerFrame: 72,
+    name: 'Venus Flytrap'
+  }
+};
+Object.values(turntables).forEach((turntable) => {
+  turntable.frames = Array.from({ length: turntable.frameCount }, () => {
+    const image = new Image();
+    image.decoding = 'async';
+    return image;
+  });
+  turntable.ready = false;
 });
-let turntableFramesReady = false;
 
 function showTurntableFrame(image, frameNumber) {
-  const frame = clamp(frameNumber, 1, turntableFrameCount);
-  if (!turntableFramesReady || image.dataset.turntableFrame === String(frame)) return;
+  const turntable = turntables[image.dataset.turntable];
+  if (!turntable) return;
 
+  const frame = clamp(frameNumber, 1, turntable.frameCount);
+  if (!turntable.ready || image.dataset.turntableFrame === String(frame)) return;
   image.dataset.turntableFrame = frame;
-  image.src = turntableFrames[frame - 1].src;
+  image.src = turntable.frames[frame - 1].src;
 }
 
 const baseScale = (distance) => {
@@ -261,9 +277,10 @@ function updateScrollAnimation(now) {
       * (isSmallScreen ? 0.27 : 0.24);
     const opacity = clamp(1 - (absoluteDistance - 2) / 0.8);
     const image = figure.firstElementChild;
-    if (image.dataset.turntable === 'pluja') {
-      const frameNumber = turntableFrameCount - Math.round(
-        smoothStep(clamp(absoluteDistance)) * (turntableFrameCount - 1)
+    const turntable = turntables[image.dataset.turntable];
+    if (turntable) {
+      const frameNumber = turntable.centerFrame - Math.round(
+        smoothStep(clamp(absoluteDistance)) * (turntable.centerFrame - 1)
       );
       showTurntableFrame(image, frameNumber);
     }
@@ -314,10 +331,11 @@ function updateScrollAnimation(now) {
 
   heroFigures.forEach((figure) => {
     const image = figure.firstElementChild;
-    if (image.dataset.turntable === 'pluja') {
+    const turntable = turntables[image.dataset.turntable];
+    if (turntable) {
       const turntableProgress = smoothStep(clamp(scrollY / height));
       const frameNumber = 1 + Math.round(
-        turntableProgress * (turntableFrameCount - 1)
+        turntableProgress * (turntable.frameCount - 1)
       );
       showTurntableFrame(image, frameNumber);
       figure.style.transform = '';
@@ -441,26 +459,28 @@ addEventListener('keydown', (event) => {
 });
 
 // Precarrega els fotogrames perquè el scroll els pugui recórrer sense pauses
-Promise.all(turntableFrames.map((image, index) => new Promise((resolve, reject) => {
-  const source = `assets/pluja-scroll/${String(index + 1).padStart(4, '0')}.png`;
-  image.addEventListener('load', () => resolve(image), { once: true });
-  image.addEventListener('error', () => {
-    reject(new Error('Could not load frame ' + (index + 1) + '.'));
-  }, { once: true });
-  image.src = source;
+Object.values(turntables).forEach((turntable) => {
+  Promise.all(turntable.frames.map((image, index) => new Promise((resolve, reject) => {
+    const source = `${turntable.directory}/${String(index + 1).padStart(4, '0')}.png`;
+    image.addEventListener('load', () => resolve(image), { once: true });
+    image.addEventListener('error', () => {
+      reject(new Error('Could not load frame ' + (index + 1) + '.'));
+    }, { once: true });
+    image.src = source;
 
-  if (image.complete) {
-    if (image.naturalWidth > 0) resolve(image);
-    else reject(new Error('Could not load frame ' + (index + 1) + '.'));
-  }
-})))
-  .then(() => {
-    turntableFramesReady = true;
-    requestScrollAnimation();
-  })
-  .catch((error) => {
-    console.error('Could not load the Rain figurine frames.', error);
-  });
+    if (image.complete) {
+      if (image.naturalWidth > 0) resolve(image);
+      else reject(new Error('Could not load frame ' + (index + 1) + '.'));
+    }
+  })))
+    .then(() => {
+      turntable.ready = true;
+      requestScrollAnimation();
+    })
+    .catch((error) => {
+      console.error(`Could not load the ${turntable.name} figurine frames.`, error);
+    });
+});
 
 // Actualitza el carrusel quan es mou o es redimensiona la finestra
 addEventListener('scroll', () => {
@@ -504,8 +524,9 @@ revealVisibleElements();
 const heroRow = document.getElementById('row');
 figs.forEach((figure, index) => {
   const image = figure.firstElementChild.cloneNode();
-  const isTurntable = image.dataset.turntable === 'pluja';
-  if (isTurntable) image.src = turntableFrames[0].src;
+  const turntable = turntables[image.dataset.turntable];
+  const isTurntable = Boolean(turntable);
+  if (turntable) image.src = turntable.frames[0].src;
   else if (image.dataset.poster) image.src = image.dataset.poster;
   if (!isTurntable) image.removeAttribute('data-turntable');
   image.removeAttribute('data-turntable-frame');
