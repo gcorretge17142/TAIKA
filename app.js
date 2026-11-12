@@ -19,11 +19,14 @@ const scaleStops = [0.5, 0.34, 0.23, 0.12];
 const turntables = {
   pluja: {
     directory: 'assets/pluja-scroll',
+    format: 'avif',
     frameCount: 72,
+    centerFrame: 72,
     name: 'Rain'
   },
   planta: {
-    directory: 'assets/PLANTA150fps',
+    directory: 'assets/planta-scroll',
+    format: 'avif',
     frameCount: 150,
     centerFrame: 72,
     name: 'Venus Flytrap'
@@ -35,17 +38,22 @@ Object.values(turntables).forEach((turntable) => {
     image.decoding = 'async';
     return image;
   });
+  turntable.loadedFrames = [];
   turntable.ready = false;
 });
 
 function showTurntableFrame(image, frameNumber) {
   const turntable = turntables[image.dataset.turntable];
-  if (!turntable) return;
+  if (!turntable?.ready || turntable.loadedFrames.length === 0) return;
 
   const frame = clamp(frameNumber, 1, turntable.frameCount);
-  if (!turntable.ready || image.dataset.turntableFrame === String(frame)) return;
-  image.dataset.turntableFrame = frame;
-  image.src = turntable.frames[frame - 1].src;
+  const availableFrame = turntable.loadedFrames.reduce((nearest, candidate) =>
+    Math.abs(candidate - frame) < Math.abs(nearest - frame) ? candidate : nearest
+  );
+  if (image.dataset.turntableFrame === String(availableFrame)) return;
+
+  image.dataset.turntableFrame = availableFrame;
+  image.src = turntable.frames[availableFrame - 1].src;
 }
 
 const baseScale = (distance) => {
@@ -221,7 +229,6 @@ let targetProgress = 0;
 let animationFrame = 0;
 let lastFigureHeight = 0;
 let lastFrameTime = 0;
-let heroFigures = [];
 
 // Calcula la posició, la mida i l'aspecte de les figuretes segons el scroll
 function updateScrollAnimation(now) {
@@ -229,7 +236,7 @@ function updateScrollAnimation(now) {
   now = now || performance.now();
 
   const delta = lastFrameTime
-    ? Math.min(now - lastFrameTime, 64)
+    ? now - lastFrameTime
     : 16.67;
   lastFrameTime = now;
 
@@ -254,7 +261,7 @@ function updateScrollAnimation(now) {
 
   if (currentProgress === null) currentProgress = targetProgress;
   currentProgress += (targetProgress - currentProgress)
-    * (1 - Math.exp(-delta / 360));
+    * (1 - Math.exp(-delta / 180));
   if (Math.abs(targetProgress - currentProgress) < 2e-4) {
     currentProgress = targetProgress;
   }
@@ -279,9 +286,18 @@ function updateScrollAnimation(now) {
     const image = figure.firstElementChild;
     const turntable = turntables[image.dataset.turntable];
     if (turntable) {
-      const frameNumber = turntable.centerFrame - Math.round(
-        smoothStep(clamp(absoluteDistance)) * (turntable.centerFrame - 1)
-      );
+      const frameNumber = turntable.frameCount === turntable.centerFrame
+        ? turntable.centerFrame - Math.round(
+          smoothStep(clamp(absoluteDistance)) * (turntable.centerFrame - 1)
+        )
+        : distanceFromCenter >= 0
+          ? turntable.centerFrame - Math.round(
+            smoothStep(clamp(distanceFromCenter)) * (turntable.centerFrame - 1)
+          )
+          : turntable.centerFrame + Math.round(
+            smoothStep(clamp(-distanceFromCenter))
+              * (turntable.frameCount - turntable.centerFrame)
+          );
       showTurntableFrame(image, frameNumber);
     }
 
@@ -327,22 +343,6 @@ function updateScrollAnimation(now) {
     link.classList.toggle('active', isActive);
     if (isActive) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
-  });
-
-  heroFigures.forEach((figure) => {
-    const image = figure.firstElementChild;
-    const turntable = turntables[image.dataset.turntable];
-    if (turntable) {
-      const turntableProgress = smoothStep(clamp(scrollY / height));
-      const frameNumber = 1 + Math.round(
-        turntableProgress * (turntable.frameCount - 1)
-      );
-      showTurntableFrame(image, frameNumber);
-      figure.style.transform = '';
-      return;
-    }
-
-    figure.style.transform = '';
   });
 
   const colorIndex = clamp(Math.floor(center), 0, figureCount - 1);
@@ -458,28 +458,63 @@ addEventListener('keydown', (event) => {
   }
 });
 
-// Precarrega els fotogrames perquè el scroll els pugui recórrer sense pauses
+// Precarrega els fotogrames en grups perquè el navegador no els demani tots alhora
 Object.values(turntables).forEach((turntable) => {
-  Promise.all(turntable.frames.map((image, index) => new Promise((resolve, reject) => {
-    const source = `${turntable.directory}/${String(index + 1).padStart(4, '0')}.png`;
-    image.addEventListener('load', () => resolve(image), { once: true });
+  const loadFrame = (image, index) => new Promise((resolve) => {
+    const source = `${turntable.directory}/${String(index + 1).padStart(4, '0')}.${turntable.format}`;
+    let settled = false;
+    const finish = (frame) => {
+      if (settled) return;
+      settled = true;
+      resolve(frame);
+    };
+    const decode = () => {
+      image.decode()
+        .then(() => finish(image))
+        .catch((error) => {
+          console.error(`Could not decode ${turntable.name} frame ${index + 1}.`, error);
+          finish(null);
+        });
+    };
+    image.addEventListener('load', decode, { once: true });
     image.addEventListener('error', () => {
-      reject(new Error('Could not load frame ' + (index + 1) + '.'));
+      console.error(`Could not load ${turntable.name} frame ${index + 1}.`);
+      finish(null);
     }, { once: true });
     image.src = source;
 
     if (image.complete) {
-      if (image.naturalWidth > 0) resolve(image);
-      else reject(new Error('Could not load frame ' + (index + 1) + '.'));
+      if (image.naturalWidth > 0) decode();
+      else {
+        console.error(`Could not load ${turntable.name} frame ${index + 1}.`);
+        finish(null);
+      }
     }
-  })))
-    .then(() => {
-      turntable.ready = true;
-      requestScrollAnimation();
-    })
-    .catch((error) => {
-      console.error(`Could not load the ${turntable.name} figurine frames.`, error);
+  });
+  const framesPerBatch = 12;
+
+  const preloadBatch = async (start) => {
+    const loadedFrames = await Promise.all(turntable.frames
+      .slice(start, start + framesPerBatch)
+      .map((image, offset) => loadFrame(image, start + offset)));
+    loadedFrames.forEach((image, offset) => {
+      if (image) turntable.loadedFrames.push(start + offset + 1);
     });
+  };
+
+  (async () => {
+    for (let start = 0; start < turntable.frameCount; start += framesPerBatch) {
+      await preloadBatch(start);
+    }
+
+    if (turntable.loadedFrames.length === 0) {
+      console.error(`No ${turntable.name} figurine frames could be loaded.`);
+      return;
+    }
+
+    turntable.ready = true;
+    requestScrollAnimation();
+  })();
 });
 
 // Actualitza el carrusel quan es mou o es redimensiona la finestra
@@ -524,11 +559,8 @@ revealVisibleElements();
 const heroRow = document.getElementById('row');
 figs.forEach((figure, index) => {
   const image = figure.firstElementChild.cloneNode();
-  const turntable = turntables[image.dataset.turntable];
-  const isTurntable = Boolean(turntable);
-  if (turntable) image.src = turntable.frames[0].src;
-  else if (image.dataset.poster) image.src = image.dataset.poster;
-  if (!isTurntable) image.removeAttribute('data-turntable');
+  if (image.dataset.poster) image.src = image.dataset.poster;
+  image.removeAttribute('data-turntable');
   image.removeAttribute('data-turntable-frame');
   image.removeAttribute('data-poster');
   image.removeAttribute('data-fit');
@@ -541,7 +573,6 @@ figs.forEach((figure, index) => {
   wrapper.appendChild(image);
   heroRow.appendChild(wrapper);
 });
-heroFigures = [...heroRow.children];
 
 const headerLogo = document.getElementById('hl');
 headerLogo.src = header.firstElementChild.src;
